@@ -3,6 +3,7 @@ package com.justnative;
 import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
+import android.webkit.WebView;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -78,6 +79,7 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+    WebView.setWebContentsDebuggingEnabled(true);
     SoLoader.init(this, /* native exopackage */ false);
 
     if (!BuildConfig.DEBUG) {
