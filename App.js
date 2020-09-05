@@ -16,7 +16,8 @@ export default function App() {
   const jsCode = `
     document.body.classList.add('native');
     const style = document.createElement('style');
-    style.textContent = 'body.native .chat > .head { padding-top: 2.5rem; }';
+    style.textContent = 'body.native .chat > .head { padding-top: 2.5rem; } ';
+    style.textContent += 'body.electron .dropdown.attachTopLeft,  body.electron .dropdown.attachTopRight { top: 5.8rem; }';
     document.head.append(style);
 `;
 
