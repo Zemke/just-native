@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "888663953989",
+    "firebase_url": "https://just-android-d142e.firebaseio.com",
+    "project_id": "just-android-d142e",
+    "storage_bucket": "just-android-d142e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888663953989:android:74ca5b7dc085aede15892c",
+        "android_client_info": {
+          "package_name": "com.justnative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "888663953989-0tntuj5krje9ng5fo60sfo5cn30rs4nr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3u75RusPAqHZWad1IQTzwwbQpHu4u15s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "888663953989-0tntuj5krje9ng5fo60sfo5cn30rs4nr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

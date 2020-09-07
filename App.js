@@ -1,7 +1,8 @@
 import {StatusBar} from 'expo-status-bar';
 import React, {useEffect} from 'react';
-import {PermissionsAndroid, View} from 'react-native';
+import {Alert, PermissionsAndroid, View} from 'react-native';
 import WebView from "react-native-webview/lib/WebView";
+import messaging from '@react-native-firebase/messaging';
 
 export default function App() {
 
@@ -11,6 +12,12 @@ export default function App() {
 
   useEffect(() => {
     requestCameraPermission();
+  });
+
+  useEffect(() => {
+    return messaging().onMessage(async remoteMessage => {
+      Alert.alert(`FCM:  ${JSON.stringify(remoteMessage)}`);
+    });
   });
 
   const jsCode = `
