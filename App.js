@@ -1,6 +1,6 @@
 import {StatusBar} from 'expo-status-bar';
 import React, {useEffect, useRef} from 'react';
-import {Alert, PermissionsAndroid, View} from 'react-native';
+import {PermissionsAndroid, View} from 'react-native';
 import WebView from "react-native-webview/lib/WebView";
 import messaging from '@react-native-firebase/messaging';
 import firebase from '@react-native-firebase/app';
@@ -39,9 +39,7 @@ export default function App() {
   });
 
   useEffect(() => {
-    return messaging().onMessage(async remoteMessage => {
-      Alert.alert(`FCM:  ${JSON.stringify(remoteMessage)}`);
-    });
+    return messaging().onMessage(remoteMessage => console.log('FCM received', remoteMessage));
   });
 
   const jsCode = `
@@ -63,34 +61,25 @@ export default function App() {
 
   const authenticate = async userUid => {
     const res = await functions(await originApp).httpsCallable('createCustomToken')({userUid})
-    console.log('res', res);
+    console.log('createCustomToken res', res);
     return res.data['customToken'];
   };
 
   const saveToken = async (token, userUid) => {
-    console.log('user doc:', await firestore(await originApp).collection('users').doc(userUid).get())
+    console.log('save token', token);
+    console.log('for user', userUid);
     return await firestore(await originApp)
       .collection('users')
       .doc(userUid)
-      .set({tokens: firebase.firestore.FieldValue.arrayUnion(token)}, {merge: true})
-      .then(res => console.log(`token ${token} of user ${userUid} saved:`, res))
-      .catch(console.error);
+      .set({tokens: firebase.firestore.FieldValue.arrayUnion(token)}, {merge: true});
   };
 
   const onWebViewMessage = async e => {
     const currentUserUid = JSON.parse(e.nativeEvent.data).currentUser.uid;
-    console.log('currentUserUid from webview local storage', currentUserUid);
-    const token = await authenticate(currentUserUid);
-    user.current = await auth(await originApp).signInWithCustomToken(token);
-    messaging().getToken()
-      .then(token => {
-        console.log('got token', token);
-        saveToken(token, currentUserUid);
-      });
-    messaging().onTokenRefresh(token => {
-      console.log('token refresh received', token);
-      saveToken(token, currentUserUid)
-    });
+    const authCustomToken = await authenticate(currentUserUid);
+    user.current = await auth(await originApp).signInWithCustomToken(authCustomToken);
+    saveToken(await messaging().getToken(), currentUserUid)
+    messaging().onTokenRefresh(messageToken => saveToken(messageToken, currentUserUid));
   };
 
   const onLoad = () => console.log('webview onload')
