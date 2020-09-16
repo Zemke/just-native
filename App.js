@@ -111,9 +111,3 @@ export default function App() {
     </View>
   );
 }
-
-// todo function for just-pwa has to sent android messages to the other firebase app?
-// todo firestore of secondary app just-pwa needs to be used
-// todo and for saving into the just-pwa firestore we need auth
-//  and for that one could use custom token authentication
-//  https://firebase.google.com/docs/auth/admin/create-custom-tokens#web
