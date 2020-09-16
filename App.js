@@ -4,29 +4,31 @@ import {Alert, PermissionsAndroid, View} from 'react-native';
 import WebView from "react-native-webview/lib/WebView";
 import messaging from '@react-native-firebase/messaging';
 import firebase from '@react-native-firebase/app';
+import functions from '@react-native-firebase/functions';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
-let originApp;
-(() => {
-  const origin = firebase.app('origin');
-  if (origin != null) {
-    return Promise.resolve(origin);
+const originApp = (async () => {
+  try {
+    return Promise.resolve(firebase.app('origin'));
+  } catch (e) {
+    return firebase.initializeApp({
+      apiKey: "AIzaSyCpeA-4i6sZalkiqjB3ks6u1__hO4E2o8U",
+      authDomain: "just-pwa.firebaseapp.com",
+      databaseURL: "https://just-pwa.firebaseio.com",
+      projectId: "just-pwa",
+      storageBucket: "just-pwa.appspot.com",
+      messagingSenderId: "389806956797",
+      appId: "1:389806956797:web:18d5c9ae865eda5b51de94",
+      measurementId: "G-8FFPRPW39V"
+    }, 'origin');
   }
-  return firebase.initializeApp({
-    apiKey: "AIzaSyCpeA-4i6sZalkiqjB3ks6u1__hO4E2o8U",
-    authDomain: "just-pwa.firebaseapp.com",
-    databaseURL: "https://just-pwa.firebaseio.com",
-    projectId: "just-pwa",
-    storageBucket: "just-pwa.appspot.com",
-    messagingSenderId: "389806956797",
-    appId: "1:389806956797:web:18d5c9ae865eda5b51de94",
-    measurementId: "G-8FFPRPW39V"
-  }, 'origin');
-})().then(app => originApp = app);
-
+})();
 
 export default function App() {
 
-  const currentUserUid = useRef(null);
+  const user = useRef(null);
+  const webViewRef = useRef(null);
 
   const requestCameraPermission = async () =>
     await PermissionsAndroid.request(
@@ -59,29 +61,35 @@ export default function App() {
     })();
 `;
 
+  const authenticate = async userUid => {
+    const res = await functions(await originApp).httpsCallable('createCustomToken')({userUid})
+    console.log('res', res);
+    return res.data['customToken'];
+  };
+
   const saveToken = async (token, userUid) => {
-    console.log('user doc:', await firebase.app('origin').firestore().collection('users').doc(userUid).get())
-    return await firebase.app('origin')
-      .firestore()
+    console.log('user doc:', await firestore(await originApp).collection('users').doc(userUid).get())
+    return await firestore(await originApp)
       .collection('users')
       .doc(userUid)
-      // .update({tokens: firebase.app('origin').firestore.FieldValue.arrayUnion(token)})
-      .set({tokens: firebase.app('origin').firestore.FieldValue.arrayUnion(token)}, {merge: true})
+      .set({tokens: firebase.firestore.FieldValue.arrayUnion(token)}, {merge: true})
       .then(res => console.log(`token ${token} of user ${userUid} saved:`, res))
       .catch(console.error);
   };
 
-  const onWebViewMessage = e => {
-    currentUserUid.current = JSON.parse(e.nativeEvent.data).currentUser.uid;
-    console.log('currentUserUid from webview local storage', currentUserUid.current);
+  const onWebViewMessage = async e => {
+    const currentUserUid = JSON.parse(e.nativeEvent.data).currentUser.uid;
+    console.log('currentUserUid from webview local storage', currentUserUid);
+    const token = await authenticate(currentUserUid);
+    user.current = await auth(await originApp).signInWithCustomToken(token);
     messaging().getToken()
       .then(token => {
         console.log('got token', token);
-        saveToken(token, currentUserUid.current);
+        saveToken(token, currentUserUid);
       });
     messaging().onTokenRefresh(token => {
       console.log('token refresh received', token);
-      saveToken(token, currentUserUid.current)
+      saveToken(token, currentUserUid)
     });
   };
 
@@ -91,6 +99,7 @@ export default function App() {
     <View style={{height: "100%", width: "100%"}}>
       <WebView source={{uri: 'https://just.zemke.io'}}
                mediaPlaybackRequiresUserAction={false}
+               ref={(ref) => webViewRef.current = ref}
                originWhitelist={['*']}
                allowsInlineMediaPlayback
                javaScriptEnabledAndroid={true}
