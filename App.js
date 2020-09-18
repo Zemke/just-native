@@ -30,12 +30,14 @@ export default function App() {
   const user = useRef(null);
   const webViewRef = useRef(null);
 
-  const requestCameraPermission = async () =>
-    await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.CAMERA);
+  const requestPermissions = async () => {
+    await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
+    const messagingPermission = await messaging().requestPermission();
+    console.info('messaging permission:', messagingPermission);
+  };
 
   useEffect(() => {
-    requestCameraPermission();
+    requestPermissions();
   });
 
   useEffect(() => {
