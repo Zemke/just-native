@@ -1,35 +1,50 @@
 {
   "project_info": {
-    "project_number": "888663953989",
-    "firebase_url": "https://just-android-d142e.firebaseio.com",
-    "project_id": "just-android-d142e",
-    "storage_bucket": "just-android-d142e.appspot.com"
+    "project_number": "389806956797",
+    "firebase_url": "https://just-pwa.firebaseio.com",
+    "project_id": "just-pwa",
+    "storage_bucket": "just-pwa.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:888663953989:android:74ca5b7dc085aede15892c",
+        "mobilesdk_app_id": "1:389806956797:android:491348fac8a4340d51de94",
         "android_client_info": {
           "package_name": "com.justnative"
         }
       },
       "oauth_client": [
         {
-          "client_id": "888663953989-0tntuj5krje9ng5fo60sfo5cn30rs4nr.apps.googleusercontent.com",
+          "client_id": "389806956797-bf12ki7bpacq2ne975q1dua3q59amjeb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.justnative",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "389806956797-ddqqbr1o4t9rcuub0on66fs41muqetas.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA3u75RusPAqHZWad1IQTzwwbQpHu4u15s"
+          "current_key": "AIzaSyA7ryf3TogeeS2fHaAuOZcYiEHEhw0o5CM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "888663953989-0tntuj5krje9ng5fo60sfo5cn30rs4nr.apps.googleusercontent.com",
+              "client_id": "389806956797-ddqqbr1o4t9rcuub0on66fs41muqetas.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "389806956797-im2vq8qptq8n303ji5id2flh5gjkfq92.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.name.justnative"
+              }
             }
           ]
         }
