@@ -8,23 +8,6 @@ import functions from '@react-native-firebase/functions';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-const originApp = (async () => {
-  try {
-    return Promise.resolve(firebase.app('origin'));
-  } catch (e) {
-    return firebase.initializeApp({
-      apiKey: "AIzaSyCpeA-4i6sZalkiqjB3ks6u1__hO4E2o8U",
-      authDomain: "just-pwa.firebaseapp.com",
-      databaseURL: "https://just-pwa.firebaseio.com",
-      projectId: "just-pwa",
-      storageBucket: "just-pwa.appspot.com",
-      messagingSenderId: "389806956797",
-      appId: "1:389806956797:web:18d5c9ae865eda5b51de94",
-      measurementId: "G-8FFPRPW39V"
-    }, 'origin');
-  }
-})();
-
 export default function App() {
 
   const user = useRef(null);
@@ -44,6 +27,7 @@ export default function App() {
     return messaging().onMessage(remoteMessage => console.log('FCM received', remoteMessage));
   });
 
+  // language=ECMAScript 6
   const jsCode = `
     (() => { // CSS amendments
       document.body.classList.add('native');
@@ -62,7 +46,7 @@ export default function App() {
 `;
 
   const authenticate = async userUid => {
-    const res = await functions(await originApp).httpsCallable('createCustomToken')({userUid})
+    const res = await functions().httpsCallable('createCustomToken')({userUid})
     console.log('createCustomToken res', res);
     return res.data['customToken'];
   };
@@ -70,7 +54,7 @@ export default function App() {
   const saveToken = async (token, userUid) => {
     console.log('save token', token);
     console.log('for user', userUid);
-    return await firestore(await originApp)
+    return await firestore()
       .collection('users')
       .doc(userUid)
       .set({tokens: firebase.firestore.FieldValue.arrayUnion(token)}, {merge: true});
@@ -79,7 +63,7 @@ export default function App() {
   const onWebViewMessage = async e => {
     const currentUserUid = JSON.parse(e.nativeEvent.data).currentUser.uid;
     const authCustomToken = await authenticate(currentUserUid);
-    user.current = await auth(await originApp).signInWithCustomToken(authCustomToken);
+    user.current = await auth().signInWithCustomToken(authCustomToken);
     saveToken(await messaging().getToken(), currentUserUid)
     messaging().onTokenRefresh(messageToken => saveToken(messageToken, currentUserUid));
   };
