@@ -27,6 +27,7 @@ export default function App() {
     return messaging().onMessage(remoteMessage => console.log('FCM received', remoteMessage));
   });
 
+  // language=ECMAScript 6
   const jsCode = `
     (() => { // CSS amendments
       document.body.classList.add('native');
